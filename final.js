@@ -8,7 +8,8 @@ const uri = process.env.MONGO_CONNECTION_STRING;
 const databaseAndCollection = {db: "CMSC335DB", collection:"campApplicants"};
 
 app.set('view engine', 'ejs');
-app.set('views', __dirname + '/templates');
+app.set('views', path.join(__dirname, 'templates'));
+
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json()); 
 
