@@ -4,7 +4,8 @@ const path = require('path');
 const app = express();
 const portNumber = 9007;
 
-app.set('views', __dirname + '/templates');
+app.set('views', path.join(__dirname, 'templates'));
+
 
 require("dotenv").config();
 const uri = process.env.MONGO_CONNECTION_STRING;
@@ -12,7 +13,7 @@ const databaseAndCollection = { db: "CMSC335DB", collection: "campApplicants"};
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(express.static(path.join(__dirname, 'public'))); // Serve static files
+// app.use(express.static(path.join(__dirname, 'public'))); // Serve static files
 
 async function connect() {
   try {
