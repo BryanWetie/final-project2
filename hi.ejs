@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Dictionary Lookup</title>
+   <style>
+       body {
+           font-family: Arial, sans-serif;
+           margin: 20px;
+       }
+       #output, #addWordForm {
+           margin-top: 20px;
+           padding: 10px;
+           border: 1px solid #ddd;
+           border-radius: 5px;
+       }
+       input, button {
+           margin: 5px;
+           padding: 5px;
+       }
+   </style>
+</head>
+<body>
+   <h1>Dictionary Lookup</h1>
+   
+   <!-- Search Form -->
+   <form id="searchForm">
+       <input type="text" id="wordInput" placeholder="Type a word" required />
+       <button type="submit">Search</button>
+   </form>
+
+   <!-- Add Word Form -->
+   <form id="addWordForm">
+       <h2>Add New Word</h2>
+       <input type="text" id="newWord" placeholder="Word" required />
+       <input type="text" id="newDefinition" placeholder="Definition" required />
+       <button type="submit">Add Word</button>
+   </form>
+
+   <div id="output">
+       <p><strong>Definition:</strong> <span id="definition">None</span></p>
+   </div>
+
+   <script>
+       // Search Word
+       document.getElementById('searchForm').addEventListener('submit', async (e) => {
+           e.preventDefault();
+           const word = document.getElementById('wordInput').value.trim();
+           const output = document.getElementById('definition');
+
+           if (!word) {
+               output.textContent = "Please enter a word.";
+               return;
+           }
+
+           try {
+               const response = await fetch(`/get-definition/${word}`);
+               const data = await response.json();
+               
+               if (data.definition) {
+                   output.textContent = data.definition;
+               } else {
+                   output.textContent = "Word not found";
+               }
+           } catch (error) {
+               output.textContent = "Error fetching definition";
+               console.error('Error:', error);
+           }
+       });
+
+       // Add Word
+       document.getElementById('addWordForm').addEventListener('submit', async (e) => {
+           e.preventDefault();
+           const word = document.getElementById('newWord').value.trim();
+           const definition = document.getElementById('newDefinition').value.trim();
+
+           if (!word || !definition) {
+               alert("Please enter both word and definition");
+               return;
+           }
+
+           try {
+               const response = await fetch('/add-word', {
+                   method: 'POST',
+                   headers: {
+                       'Content-Type': 'application/json',
+                   },
+                   body: JSON.stringify({ word, definition })
+               });
+
+               const result = await response.json();
+               
+               if (response.ok) {
+                   alert('Word added successfully!');
+                   // Clear input fields
+                   document.getElementById('newWord').value = '';
+                   document.getElementById('newDefinition').value = '';
+               } else {
+                   alert('Error: ' + result.message);
+               }
+           } catch (error) {
+               console.error('Error:', error);
+               alert('Failed to add word');
+           }
+       });
+   </script>
+</body>
+</html>
