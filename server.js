@@ -4,7 +4,7 @@ const path = require('path');
 const app = express();
 const portNumber = 9007;
 
-app.set('views', path.join(__dirname, 'templates'));
+app.set('views', path.join(__dirname));
 
 
 require("dotenv").config();
